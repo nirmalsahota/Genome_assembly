@@ -1,0 +1,20 @@
+############### QC for the raw reads#######################################
+
+mkdir -p $FASTQC_RAW_READS
+
+for sample in $(find "$RAW_READS" -name "*_R1.fastq.gz" -exec basename {} _R1.fastq.gz \;)
+do
+
+    if [ -f "$FASTQC_RAW_READS/${sample}.fastqc.done" ]; then
+        echo "$sample : FastQC already completed."
+        continue
+    fi
+
+    fastqc \
+        -o "$FASTQC_RAW_READS" \
+        "$RAW_READS/${sample}_R1.fastq.gz" \
+        "$RAW_READS/${sample}_R2.fastq.gz"
+
+    touch "$FASTQC_RAW_READS/${sample}.fastqc.done"
+
+done
