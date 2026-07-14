@@ -1,0 +1,27 @@
+############ FastQC of trimmed reads ################
+
+mkdir -p "$FASTQC_TRIMMED_READS"
+
+for sample in $(find "$TRIMMED_READS" -name "*_R1.trimmed.fastq.gz" -exec basename {} _R1.trimmed.fastq.gz \;)
+do
+
+    if [ -f "$FASTQC_TRIMMED_READS/${sample}.fastqc.done" ]; then
+        echo "$sample : Trimmed FastQC already completed."
+        continue
+    fi
+
+    echo "Running Trimmed FastQC for $sample..."
+
+    fastqc \
+        -t 16 \
+        -o "$FASTQC_TRIMMED_READS" \
+        "$TRIMMED_READS/${sample}_R1.trimmed.fastq.gz" \
+        "$TRIMMED_READS/${sample}_R2.trimmed.fastq.gz"
+
+    touch "$FASTQC_TRIMMED_READS/${sample}.fastqc.done"
+
+    echo "$sample Trimmed FastQC completed."
+
+done
+
+echo "Trimmed FastQC is ready"
