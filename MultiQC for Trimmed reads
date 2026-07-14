@@ -1,0 +1,25 @@
+
+############### MultiQC of trimmed reads ################
+
+mkdir -p "$MULTIQC_TRIMMED_READS"
+
+if [ ! -f "$MULTIQC_TRIMMED_READS/multiqc.done" ]; then
+
+    echo "Running MultiQC for trimmed reads..."
+
+    multiqc \
+        "$FASTQC_TRIMMED_READS" \
+        -o "$MULTIQC_TRIMMED_READS"
+
+    touch "$MULTIQC_TRIMMED_READS/multiqc.done"
+
+    echo "Trimmed MultiQC completed successfully."
+
+else
+
+    echo "Trimmed MultiQC already completed. Skipping."
+
+fi
+
+echo "MultiQC trimmed reads are ready"
+
