@@ -1,0 +1,42 @@
+#########################Spades########################
+
+mkdir -p $ASSEMBLY
+
+THREADS=32
+MEMORY=200
+
+for sample in $(find "$RAW_READS" -name "*_R1.fastq.gz" -exec basename {} _R1.fastq.gz \;)
+do
+     # Already finished
+    if [ -f "${ASSEMBLY}/${sample}/spades.done" ]; then
+        echo "SPAdes already completed."
+        continue
+    fi
+
+    # Interrupted previously
+    if [ -d "${ASSEMBLY}/${sample}" ]; then
+
+        echo "Resuming previous SPAdes run..."
+
+        spades.py \
+            --continue \
+            -o "${ASSEMBLY}/${sample}"
+
+    else
+
+        echo "Starting new SPAdes assembly..."
+
+        spades.py \
+            --isolate \
+            -1 "${TRIMMED_READS}/${sample}_R1.trimmed.fastq.gz" \
+            -2 "${TRIMMED_READS}/${sample}_R2.trimmed.fastq.gz" \
+            -o "${ASSEMBLY}/${sample}" \
+            -t ${THREADS} \
+            -m ${MEMORY}
+    fi
+
+    touch "${ASSEMBLY}/${sample}/spades.done"
+    echo "${sample} assembly completed"
+done
+
+echo "All assemblies completed"
