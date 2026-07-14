@@ -1,0 +1,22 @@
+######################QUAST on assembly#############################
+
+mkdir -p $QUAST_ASSEMBLY
+
+THREADS=32
+if [ ! -f "${QUAST_ASSEMBLY}/quast.done" ]; then
+     echo "QUAST already completed."
+else
+     echo "Running Quast"
+
+     /home/hp/miniconda3/envs/quast_env/bin/quast.py \
+         ${ASSEMBLY}/*/contigs.fasta \
+         -o ${QUAST_ASSEMBLY} \
+         -t ${THREADS} \
+         --min-contig 500
+
+       touch "${QUAST_ASSEMBLY}/quast.done"
+
+       echo "Quast completed"
+fi
+
+echo "Quast is ready"
