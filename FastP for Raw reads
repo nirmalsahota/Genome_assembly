@@ -1,0 +1,25 @@
+######### Fastp for reads ###############################################
+
+
+mkdir -p $TRIMMED_READS
+for sample in $(find "$RAW_READS" -name "*_R1.fastq.gz" -exec basename {} _R1.fastq.gz \;)
+do
+    if [ -f "${TRIMMED_READS}/${sample}.fastp.done" ]; then
+        echo "$sample : fastp already completed."
+        continue
+    fi
+    echo "Running fastp for $sample"
+
+    fastp \
+    -i "${RAW_READS}/${sample}_R1.fastq.gz" \
+    -I "${RAW_READS}/${sample}_R2.fastq.gz" \
+    -o "${TRIMMED_READS}/${sample}_R1.trimmed.fastq.gz" \
+    -O "${TRIMMED_READS}/${sample}_R2.trimmed.fastq.gz" \
+    --detect_adapter_for_pe \
+    --thread 16 \
+    --html "${TRIMMED_READS}/${sample}_fastp.html" \
+    --json "${TRIMMED_READS}/${sample}_fastp.json"
+    touch "${TRIMMED_READS}/${sample}.fastp.done"
+done
+
+echo "Trimmed reads are ready"
