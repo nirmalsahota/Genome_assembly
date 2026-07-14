@@ -1,0 +1,23 @@
+########## MultiQc for reads ###############################################
+
+mkdir -p "$MULTIQC_RAW_READS"
+
+if [ -f "$MULTIQC_RAW_READS/multiqc.done" ]; then
+
+    echo "MultiQC already completed. Skipping."
+
+else
+
+    echo "Running MultiQC..."
+
+    multiqc \
+        "$FASTQC_RAW_READS" \
+        -o "$MULTIQC_RAW_READS"
+
+    touch "$MULTIQC_RAW_READS/multiqc.done"
+
+    echo "MultiQC completed successfully."
+
+fi
+
+echo "MultiQC report is ready"
